@@ -78,29 +78,30 @@ void executePayload(String filename){
   Keyboard.end();
 }
 
+// Gestion des fichiers sur la carte SD
 void printDirectory(File dir, int numTabs) {
   while (true) {
     File entry =  dir.openNextFile();
     if (!entry) {
-      // no more files
+      // Plus d'autres fichiers
       break;
     }
     String file_name = entry.name();
     
-    if ( isFileType(entry.name()) && file_name.indexOf('_') != 0 ) { // Here is the magic
+    if ( isFileType(entry.name()) && file_name.indexOf('_') != 0 ) { // Gestion du type de fichier
       char *tempname = entry.name();
-      fileList[count] = file_name; //add to array
+      fileList[count] = file_name; // On ajoute le fichier à la liste
       tempname = "";
-      Serial.println(fileList[count]); //show array item
+      Serial.println(fileList[count]); 
       count++;
     }
-    //lcd.print(entry.name());
+
     delay(1000);
     entry.close();
   }
 }
 
-
+// Vérification si le fichier est un fichier et si c'est bien un .txt
 bool isFileType(char* filename) {
   int8_t len = strlen(filename);
   bool result;
@@ -289,13 +290,14 @@ void Press(String b)
 }
 
 void loop() {
-
+  // On lit les états de chacun des boutons
   buttonUpState = digitalRead(buttonUp);
   buttonDownState = digitalRead(buttonDown);
   buttonSelectState = digitalRead(buttonSelect);
 
   lcd.clear();
 
+  // On écrit la liste des fichiers à afficher sur l'écran
   lcd.setCursor(0,0);
   lcd.print(fileList[index]);
   lcd.setCursor(0,1);
@@ -315,7 +317,8 @@ void loop() {
     }
   } 
 
-   if (buttonSelectState == LOW) {
+  // Si on appuie sur la selection, on éxecute le payload
+  if (buttonSelectState == LOW) {
     Serial.println("SELECT");
     executePayload(fileList[index]);
   } 
